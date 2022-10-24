@@ -47,3 +47,6 @@ class NMC:
         xts = x[tr_idx == 0, :]
 
         return xtr, ytr, xts, yts
+
+    def accuracy(self, y_pred, yts):
+        return (y_pred == yts).mean()
