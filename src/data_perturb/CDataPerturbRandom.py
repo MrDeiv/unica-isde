@@ -23,6 +23,16 @@ class CDataPerturbRandom(CDataPerturb):
 
     @min_value.setter
     def min_value(self, value):
+        """
+
+        Parameters
+        ----------
+        value
+
+        Returns
+        -------
+
+        """
         if value<0:
             value = 0
 
@@ -37,9 +47,6 @@ class CDataPerturbRandom(CDataPerturb):
 
     @k.setter
     def k(self, k):
-        if not isinstance(k,int):
-            raise TypeError("Type error for k")
-
         self._k = k
 
     def data_perturbation(self, x):

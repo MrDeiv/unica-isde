@@ -4,7 +4,7 @@ from .CDataPerturb import CDataPerturb
 
 
 class CDataPerturbGaussian(CDataPerturb):
-    def __init__(self, min_value=0, max_value=255, sigma=40):
+    def __init__(self, min_value=0, max_value=255, sigma=1):
         self.min_value = min_value
         self.max_value = max_value
         self.sigma = sigma
@@ -40,7 +40,9 @@ class CDataPerturbGaussian(CDataPerturb):
         self._sigma = value
 
     def data_perturbation(self, x):
-        for elem in x:
-            elem = self.sigma * np.random.randn()
+        z = self.sigma * np.random.randn(x.size)  # sampling from N(0, sigma)
+        x += z
+        x[x < self.min_value] = self.min_value
+        x[x > self.max_value] = self.max_value
 
         return x

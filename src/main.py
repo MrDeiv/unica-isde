@@ -6,7 +6,7 @@ from classifiers import NMC
 
 
 def plot_digit(image, shape=(28, 28)):
-    plt.imshow(np.reshape(image, newshape=(28, 28)), 'gray')
+    plt.imshow(np.reshape(image, newshape=shape), 'gray')
 
 
 def plot_ten_digits(x, y=None):
@@ -30,38 +30,40 @@ centroids = nmc.fit(xtr, ytr)
 
 y_pred = nmc.predict(xts)
 acc = nmc.accuracy(y_pred, yts)
-print(acc)
+print("Initial accuracy:", acc*100, "%")
 
 # Perturbations
 # Random noise
-k_vals = [0, 10, 20, 50, 100, 200, 500]
-accur_1 = []
-for k in k_vals:
-    pert = CDataPerturbRandom(k=k)
+k_vals = np.array([0, 10, 20, 50, 100, 200, 500])
+accur_1 = np.zeros(k_vals.size)
+pert = CDataPerturbRandom()
+for i, k in enumerate(k_vals):
+    pert.k = k
     y_pred = nmc.predict(pert.perturb_dataset(xts))
-    accur_1.append(nmc.accuracy(y_pred, yts))
+    accur_1[i] = nmc.accuracy(y_pred, yts)
 
 # Gaussian noise
-sigma_vals = [10, 20, 200, 200, 500]
-accur_2 = []
-for s in sigma_vals:
-    pert = CDataPerturbGaussian(sigma=s)
+pert = CDataPerturbGaussian(sigma=0.5)
+sigma_vals = np.array([10, 20, 200, 200, 500])
+accur_2 = np.zeros(sigma_vals.size)
+for i, s in enumerate(sigma_vals):
+    pert.sigma = sigma_vals[i]
     y_pred = nmc.predict(pert.perturb_dataset(xts))
-    accur_2.append(nmc.accuracy(y_pred, yts))
+    accur_2[i] = nmc.accuracy(y_pred, yts)
 
 # Plot
 plt.figure()
 
 # Leftmost plot
 plt.subplot(1,2,1)
-plt.ylabel("K")
-plt.xlabel("Accuracy")
-plt.plot(accur_1, k_vals)
+plt.xlabel("K")
+plt.ylabel("Accuracy")
+plt.plot(k_vals, accur_1)
 
 # Rightmost plot
 plt.subplot(1,2,2)
-plt.ylabel("Sigma")
-plt.xlabel("Accuracy")
-plt.plot(accur_2, sigma_vals)
+plt.xlabel("Sigma")
+plt.ylabel("Accuracy")
+plt.plot(sigma_vals, accur_2)
 
 plt.show()
